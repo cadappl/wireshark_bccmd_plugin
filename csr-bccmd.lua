@@ -511,18 +511,21 @@ BCCMD_STATUS = {
 hci_cmd_opcode = Field.new("bthci_cmd.opcode.ogf")
 hci_cmd_param_length = Field.new("bthci_cmd.param_length")
 
-bccmd_cmd_opcode = ProtoField.uint16("bthci_cmd.bccmd.opcode", "Command", base.HEX_DEC, BCCMD_TYPE)
-bccmd_cmd_size = ProtoField.uint16("bthci_cmd.bccmd.size", "Size")
-bccmd_cmd_seqnum = ProtoField.uint16("bthci_cmd.bccmd.seqnum", "SeqNum", base.DEC_HEX)
-bccmd_cmd_varid = ProtoField.uint16("bthci_cmd.bccmd.varid", "VarId", base.HEX_DEC, BCCMD_VARID)
-bccmd_cmd_status = ProtoField.uint16("bthci_cmd.bccmd.status", "Status", base.HEX_DEC, BCCMD_STATUS)
-bccmd_cmd_payload = ProtoField.bytes("bthci_cmd.bccmd.payload", "Payload")
-bccmd_cmd_padding = ProtoField.bytes("bthci_cmd.bccmd.padding", "Padding")
+hci_event_code = Field.new("bthci_evt.code")
+hci_event_param_length = Field.new("bthci_evt.param_length")
+
+bccmd_opcode = ProtoField.uint16("bthci_cmd.bccmd.opcode", "Command", base.HEX_DEC, BCCMD_TYPE)
+bccmd_size = ProtoField.uint16("bthci_cmd.bccmd.size", "Size")
+bccmd_seqnum = ProtoField.uint16("bthci_cmd.bccmd.seqnum", "SeqNum", base.DEC_HEX)
+bccmd_varid = ProtoField.uint16("bthci_cmd.bccmd.varid", "VarId", base.HEX_DEC, BCCMD_VARID)
+bccmd_status = ProtoField.uint16("bthci_cmd.bccmd.status", "Status", base.HEX_DEC, BCCMD_STATUS)
+bccmd_payload = ProtoField.bytes("bthci_cmd.bccmd.payload", "Payload")
+bccmd_padding = ProtoField.bytes("bthci_cmd.bccmd.padding", "Padding")
 
 -- 0x7003 - CSR_VARID_PS
-bccmd_cmd_pskey = ProtoField.uint16("bthci_cmd.bccmd.pskey", "PS Key", base.HEX, BCCMD_PSKEY)
-bccmd_cmd_pskey_size = ProtoField.uint16("bthci_cmd.bccmd.pskey.size", "PsKey Size", base.DEC)
-bccmd_cmd_pskey_store = ProtoField.uint16("bthci_cmd.bccmd.pskey.store", "PsKey Store", base.HEX_DEC, {
+bccmd_pskey = ProtoField.uint16("bthci_cmd.bccmd.pskey", "PS Key", base.HEX, BCCMD_PSKEY)
+bccmd_pskey_size = ProtoField.uint16("bthci_cmd.bccmd.pskey.size", "PsKey Size", base.DEC)
+bccmd_pskey_store = ProtoField.uint16("bthci_cmd.bccmd.pskey.store", "PsKey Store", base.HEX_DEC, {
     [0x0000] = 'Default',
     [0x0001] = 'psi',
     [0x0002] = 'psf',
@@ -535,7 +538,7 @@ bccmd_cmd_pskey_store = ProtoField.uint16("bthci_cmd.bccmd.pskey.store", "PsKey 
     [0x000f] = 'psram, psi, psf then psrom'
 })
 
-bccmd_cmd_pskey_value = {
+bccmd_pskey_value = {
     [0] = ProtoField.string("bthci_cmd.bccmd.pskey.value", "PsKey Value"),
     [1] = ProtoField.uint16("bthci_cmd.bccmd.pskey.value1", "PsKey Value1", base.HEX_DEC),
     [2] = ProtoField.uint16("bthci_cmd.bccmd.pskey.value2", "PsKey Value2", base.HEX_DEC),
@@ -551,148 +554,136 @@ bccmd_cmd_pskey_value = {
 
 -- BlueCore Command Postdissector
 
-csr_bccmd_command_proto = Proto("csr_bccmd_command_proto","CSR BCCMD Command postdissector")
-csr_bccmd_command_proto.fields = {
-    bccmd_cmd_opcode,
-    bccmd_cmd_size,
-    bccmd_cmd_seqnum,
-    bccmd_cmd_varid,
-    bccmd_cmd_status,
-    bccmd_cmd_payload,
-    bccmd_cmd_padding,
+csr_bccmd_proto = Proto("csr_bccmd_proto","CSR BCCMD postdissector")
+csr_bccmd_proto.fields = {
+    bccmd_opcode,
+    bccmd_size,
+    bccmd_seqnum,
+    bccmd_varid,
+    bccmd_status,
+    bccmd_payload,
+    bccmd_padding,
     -- 0x7003 - CSR_VARID_PS
-    bccmd_cmd_pskey,
-    bccmd_cmd_pskey_size,
-    bccmd_cmd_pskey_store,
-    bccmd_cmd_pskey_value[0],
-    bccmd_cmd_pskey_value[1],
-    bccmd_cmd_pskey_value[2],
-    bccmd_cmd_pskey_value[3],
-    bccmd_cmd_pskey_value[4],
-    bccmd_cmd_pskey_value[5],
-    bccmd_cmd_pskey_value[6],
-    bccmd_cmd_pskey_value[7],
-    bccmd_cmd_pskey_value[8],
-    bccmd_cmd_pskey_value[9],
-    bccmd_cmd_pskey_value[10],
+    bccmd_pskey,
+    bccmd_pskey_size,
+    bccmd_pskey_store,
+    bccmd_pskey_value[0],
+    bccmd_pskey_value[1],
+    bccmd_pskey_value[2],
+    bccmd_pskey_value[3],
+    bccmd_pskey_value[4],
+    bccmd_pskey_value[5],
+    bccmd_pskey_value[6],
+    bccmd_pskey_value[7],
+    bccmd_pskey_value[8],
+    bccmd_pskey_value[9],
+    bccmd_pskey_value[10],
 }
 
-local bccmd_command_op_varid = {
-    [0x7003] = function(buff, tree) -- CSR_VARID_PS
-        local offset = 0
-        tree:add_le(bccmd_cmd_pskey, buff:range(offset, 2))
-        offset = offset + 2
-        local size = buff:range(offset, 2):le_uint()
-        tree:add_le(bccmd_cmd_pskey_size, buff:range(offset, 2))
-        offset = offset + 2
-        tree:add_le(bccmd_cmd_pskey_store, buff:range(offset, 2))
-        offset = offset + 2
-        for k = 1,math.min(10, size) do
-            tree:add_le(bccmd_cmd_pskey_value[k], buff:range(offset, 2))
+
+local bccmd_op_varid = {
+    [0x7003] = { -- CSR_VARID_PS
+        [0] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_pskey, buff:range(offset, 2))
             offset = offset + 2
+            local size = buff:range(offset, 2):le_uint()
+            tree:add_le(bccmd_pskey_size, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
+            offset = offset + 2
+            for k = 1,math.min(10, size) do
+                tree:add_le(bccmd_pskey_value[k], buff:range(offset, 2))
+                offset = offset + 2
+            end
+
+            return offset
+        end,
+        [1] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_pskey, buff:range(offset, 2))
+            offset = offset + 2
+            local size = buff:range(offset, 2):le_uint()
+            tree:add_le(bccmd_pskey_size, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add(bccmd_pskey_value[0], buff:range(offset, size * 2))
+            offset = offset + size * 2
+
+            return offset
         end
-        if buff:len() ~= offset then
-            tree:add(bccmd_cmd_padding, buff:range(offset))
-        end
-    end,
+    },
 }
 
 -- Dissector
-function csr_bccmd_command_proto.dissector(buff, pinfo, tree)
+function csr_bccmd_proto.dissector(buff, pinfo, tree)
     -- Bluetooth HCI Command
     local cmd_opcode = hci_cmd_opcode()
+    -- Bluetooth HCI Event
+    local event_code = hci_event_code()
+
+    local data, offset, subtree, sup, varid
+
     if cmd_opcode ~= nil and cmd_opcode.value == 0x3f then -- Vendor-Specific
         local param_length = hci_cmd_param_length().value
         if param_length > 10 then
-            local cmd = buff:range(4)
+            data = buff:range(4)
             -- refer to external/bluetooth/bluez/tools/csr_bcsp.c#do_command
-            if cmd:range(0, 1):uint() == 0xc2 then
-                local subtree = tree:add(csr_bccmd_event_proto, cmd, "CSR BlueCore Command")
+            if data:range(0, 1):uint() == 0xc2 then
+                sup = 0
+                subtree = tree:add(csr_bccmd_proto, data, "CSR BlueCore Command")
 
-                local offset = 1
-                local command = cmd:range(offset, 2):le_uint()
-                subtree:add_le(bccmd_cmd_opcode, cmd:range(offset, 2))
+                offset = 1
+                subtree:add_le(bccmd_opcode, data:range(offset, 2))
                 offset = offset + 2
-                subtree:add_le(bccmd_cmd_size, cmd:range(offset, 2))
+                subtree:add_le(bccmd_size, data:range(offset, 2))
                 offset = offset + 2
-                subtree:add_le(bccmd_cmd_seqnum, cmd:range(offset, 2))
+                subtree:add_le(bccmd_seqnum, data:range(offset, 2))
                 offset = offset + 2
-                local varid = cmd:range(offset, 2):le_uint()
-                subtree:add_le(bccmd_cmd_varid, cmd:range(offset, 2))
+                varid = data:range(offset, 2):le_uint()
+                subtree:add_le(bccmd_varid, data:range(offset, 2))
                 offset = offset + 2
-                subtree:add_le(bccmd_cmd_status, cmd:range(offset, 2))
+                subtree:add_le(bccmd_status, data:range(offset, 2))
                 offset = offset + 2
+            end
+        end
+    elseif event_code ~= nil and event_code.value == 0xff then -- Vendor-Specific
+        local param_length = hci_event_param_length().value
+        if param_length > 0 then
+            data = buff:range(3)
+            -- refer to bluez/tools/csr_bcsp.c#do_command
+            if data:range(0, 1):uint() == 0xc2 then
+                sup = 1
+                subtree = tree:add(csr_bccmd_proto, data,"CSR BlueCore Event")
 
-                local op = bccmd_command_op_varid[varid]
-                local payload = subtree:add(bccmd_cmd_payload, cmd:range(offset, cmd:len() - offset))
-                if op ~= nil then
-                    op(cmd:range(offset), payload)
-                end
+                offset = 1
+                subtree:add_le(bccmd_opcode, data:range(offset, 2))
+                offset = offset + 2
+                subtree:add_le(bccmd_size, data:range(offset, 2))
+                offset = offset + 2
+                subtree:add_le(bccmd_seqnum, data:range(offset, 2))
+                offset = offset + 2
+                varid = data:range(offset, 2):le_uint()
+                subtree:add_le(bccmd_varid, data:range(offset, 2))
+                offset = offset + 2
+                subtree:add_le(bccmd_status, data:range(offset, 2))
+                offset = offset + 2
             end
         end
     end
-end
 
--- BlueCore Event Postdissector
-
-hci_event_code = Field.new("bthci_evt.code")
-hci_event_param_length = Field.new("bthci_evt.param_length")
-
-csr_bccmd_event_proto = Proto("csr_bccmd_event_proto","CSR BCCMD Event postdissector")
-
-local bccmd_event_op_varid = {
-    [0x7003] = function(buff, tree) -- CSR_VARID_PS
-        local offset = 0
-        tree:add_le(bccmd_cmd_pskey, buff:range(offset, 2))
-        offset = offset + 2
-        local size = buff:range(offset, 2):le_uint()
-        tree:add_le(bccmd_cmd_pskey_size, buff:range(offset, 2))
-        offset = offset + 2
-        tree:add_le(bccmd_cmd_pskey_store, buff:range(offset, 2))
-        offset = offset + 2
-        tree:add(bccmd_cmd_pskey_value[0], buff:range(offset, size * 2))
-        offset = offset + size * 2
-        if buff:len() ~= offset then
-            tree:add(bccmd_cmd_padding, buff:range(offset))
+    if varid ~= nil then
+        local op = bccmd_op_varid[varid]
+        local payload = subtree:add(bccmd_payload, data:range(offset, data:len() - offset))
+        if op ~= nil and op[sup] ~= nil then
+            offset = offset + op[sup](data:range(offset), payload)
         end
-    end,
-}
-
-function csr_bccmd_event_proto.dissector(buff, pinfo, tree)
-    -- Bluetooth HCI Event
-    local event_code = hci_event_code()
-    if event_code ~= nil and event_code.value == 0xff then -- Vendor-Specific
-        local param_length = hci_event_param_length().value
-        if param_length > 0 then
-            local event = buff:range(3)
-            -- refer to bluez/tools/csr_bcsp.c#do_command
-            if event:range(0, 1):uint() == 0xc2 then
-                local subtree = tree:add(csr_bccmd_event_proto, event,"CSR BlueCore Event")
-
-                local offset = 1
-                local command = event:range(offset, 2):le_uint()
-                subtree:add_le(bccmd_cmd_opcode, event:range(offset, 2))
-                offset = offset + 2
-                subtree:add_le(bccmd_cmd_size, event:range(offset, 2))
-                offset = offset + 2
-                subtree:add_le(bccmd_cmd_seqnum, event:range(offset, 2))
-                offset = offset + 2
-                local varid = event:range(offset, 2):le_uint()
-                subtree:add_le(bccmd_cmd_varid, event:range(offset, 2))
-                offset = offset + 2
-                subtree:add_le(bccmd_cmd_status, event:range(offset, 2))
-                offset = offset + 2
-
-                local op = bccmd_event_op_varid[varid]
-                local payload = subtree:add(bccmd_cmd_payload, event:range(offset, event:len() - offset))
-                if op ~= nil then
-                    op(event:range(offset), payload)
-                end
-            end
+        if data:len() ~= offset then
+            payload:add(bccmd_padding, data:range(offset))
         end
     end
 end
 
 -- register csr bccmd protocol as a postdissector
-register_postdissector(csr_bccmd_command_proto)
-register_postdissector(csr_bccmd_event_proto)
+register_postdissector(csr_bccmd_proto)
