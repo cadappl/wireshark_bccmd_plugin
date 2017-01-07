@@ -522,6 +522,63 @@ bccmd_status = ProtoField.uint16("bthci_cmd.bccmd.status", "Status", base.HEX_DE
 bccmd_payload = ProtoField.bytes("bthci_cmd.bccmd.payload", "Payload")
 bccmd_padding = ProtoField.bytes("bthci_cmd.bccmd.padding", "Padding")
 
+-- 0x281b - CSR_VARID_CHIPREV
+bccmd_chiprev = ProtoField.uint16("bthci_cmd.bccmd.chip.rev", "Chip Rev", base.HEX_DEC, {
+    [0x15] = "BC3-ROM",
+    [0x26] = "BC4-External",
+    [0x30] = "BC4-ROM",
+    [0x28] = "BC2-ROM",
+    [0x43] = "BC3-Multimedia",
+    [0x64] = "BC1 ES",
+    [0x65] = "BC1",
+    [0x89] = "BC2-External A",
+    [0x8a] = "BC2-External B",
+    [0xe2] = "BC3-Flash",
+})
+
+-- 0x282a - CSR_VARID_RAND
+bccmd_rand = ProtoField.uint16("bthci_cmd.bccmd.rand", "Rand", base.HEX_DEC)
+
+-- 0x282a - CSR_VARID_RAND
+bccmd_rand = ProtoField.uint32("bthci_cmd.bccmd.rand", "Rand", base.HEX_DEC)
+
+-- 0x2c00 - CSR_VARID_BT_CLOCK
+bccmd_clock = ProtoField.uint32("bthci_cmd.bccmd.clock", "Clock", base.HEX_DEC)
+
+-- 0x3008 - CSR_VARID_CRYPT_KEY_LENGTH
+bccmd_handle = ProtoField.uint16("bthci_cmd.bccmd.handle", "Handle", base.HEX_DEC)
+bccmd_key_len = ProtoField.uint16("bthci_cmd.bccmd.key.length", "Key Length", base.DEC)
+
+-- 0x300b - CSR_VARID_GET_NEXT_BUILDDEF
+bccmd_def = ProtoField.uint16("bthci_cmd.bccmd.def", "Def", base.HEX_DEC)
+bccmd_nextdef = ProtoField.uint16("bthci_cmd.bccmd.nextdef", "Nextdef", base.HEX_DEC)
+
+-- 0x3012 - CSR_VARID_PS_MEMORY_TYPE
+bccmd_mem_type = ProtoField.uint16("bthci_cmd.bccmd.mem.type", "MemType", base.HEX_DEC, {
+    [0x0000] = "Flash memory",
+    [0x0001] = "EEPROM",
+    [0x0002] = "RAM (transient)",
+    [0x0003] = "ROM (or \"read-only\" flash memory)",
+})
+
+-- 0x301c - CSR_VARID_READ_BUILD_NAME
+bccmd_buildname = ProtoField.string("bthci_cmd.bccmd.buildname", "BuildName")
+bccmd_start = ProtoField.uint16("bthci_cmd.bccmd.name.start", "Start", base.HEX_DEC)
+bccmd_key_len = ProtoField.uint16("bthci_cmd.bccmd.name.length", "Length", base.DEC)
+
+-- 0x482e - CSR_VARID_SINGLE_CHAN
+bccmd_channel = ProtoField.uint16("bthci_cmd.bccmd.channel", "Channel", base.HEX_DEC)
+
+-- 0x6805 - CSR_VARID_PANIC_ARG
+bccmd_panic_error = ProtoField.uint16("bthci_cmd.bccmd.panic.error", "Error", base.HEX_DEC)
+
+-- 0x6806 - CSR_VARID_FAULT_ARG
+bccmd_fault_error = ProtoField.uint16("bthci_cmd.bccmd.fault.error", "Error", base.HEX_DEC)
+
+-- 0x3005 - CSR_VARID_PS_NEXT
+bccmd_nextkey = ProtoField.uint16("bthci_cmd.bccmd.nextkey", "Next Key", base.HEX, BCCMD_PSKEY)
+-- 0x3006 - CSR_VARID_PS_SIZE
+-- 0x500c - CSR_VARID_PS_CLR_STORES
 -- 0x7003 - CSR_VARID_PS
 bccmd_pskey = ProtoField.uint16("bthci_cmd.bccmd.pskey", "PS Key", base.HEX, BCCMD_PSKEY)
 bccmd_pskey_size = ProtoField.uint16("bthci_cmd.bccmd.pskey.size", "PsKey Size", base.DEC)
@@ -563,6 +620,34 @@ csr_bccmd_proto.fields = {
     bccmd_status,
     bccmd_payload,
     bccmd_padding,
+    -- 0x281b - CSR_VARID_CHIPREV
+    bccmd_chiprev,
+    -- 0x282a - CSR_VARID_RAND
+    bccmd_rand,
+    -- 0x2c00 - CSR_VARID_BT_CLOCK
+    bccmd_clock,
+    -- 0x3008 - CSR_VARID_CRYPT_KEY_LENGTH
+    bccmd_handle,
+    bccmd_key_len,
+    -- 0x300b - CSR_VARID_GET_NEXT_BUILDDEF
+    bccmd_def,
+    bccmd_nextdef,
+    -- 0x3012 - CSR_VARID_PS_MEMORY_TYPE
+    bccmd_mem_type,
+    -- 0x301c - CSR_VARID_READ_BUILD_NAME
+    bccmd_start,
+    bccmd_length,
+    bccmd_buildname,
+    -- 0x482e - CSR_VARID_SINGLE_CHAN
+    bccmd_channel,
+    -- 0x6805 -- CSR_VARID_PANIC_ARG
+    bccmd_panic_error,
+    -- 0x6806 - CSR_VARID_FAULT_ARG
+    bccmd_fault_error,
+    -- 0x3005 - CSR_VARID_PS_NEXT
+    bccmd_nextkey,
+    -- 0x3006 - CSR_VARID_PS_SIZE
+    -- 0x500c - CSR_VARID_PS_CLR_STORES
     -- 0x7003 - CSR_VARID_PS
     bccmd_pskey,
     bccmd_pskey_size,
@@ -580,8 +665,173 @@ csr_bccmd_proto.fields = {
     bccmd_pskey_value[10],
 }
 
+-- FUNCTION
+function tree_add_u32(tree, protofield, buff)
+    local val = 0
+
+    val = buff:range(1, 1):uint()
+    val = val * 256 + buff:range(0, 1):uint()
+    val = val * 256 + buff:range(3, 1):uint()
+    val = val * 256 + buff:range(2, 1):uint()
+
+    return tree:add(protofield, buff, val)
+end
 
 local bccmd_op_varid = {
+    [0x281b] = { -- CSR_VARID_CHIPREV
+        [1] = function(buff, tree)
+            tree:add_le(bccmd_chiprev, buff:range(0, 2))
+
+            return 2
+        end
+    },
+    [0x282a] = { -- CSR_VARID_RAND
+        [1] = function(buff, tree)
+            tree:add_le(bccmd_rand, buff:range(0, 2))
+
+            return 2
+        end
+    },
+    [0x2c00] = { -- CSR_VARID_BT_CLOCK
+        [1] = function(buff, tree)
+            tree_add_u32(tree, bccmd_clock, buff:range(0, 4))
+
+            return 4
+        end
+    },
+    [0x3006] = { -- CSR_VARID_PS_NEXT
+        [0] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_pskey, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end,
+        [1] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_pskey, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_nextkey, buff:range(offset, 2))
+            offset = offset + 2
+            return offset
+        end
+    },
+    [0x3006] = { -- CSR_VARID_PS_SIZE
+        [0] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_pskey, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end,
+        [1] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_pskey, buff:range(offset, 2))
+            offset = offset + 2
+            local size = buff:range(offset, 2):le_uint()
+            tree:add_le(bccmd_pskey_size, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end
+    },
+    [0x3008] = { -- CSR_VARID_CRYPT_KEY_LENGTH
+        [0] = function(buff, tree)
+            tree:add_le(bccmd_handle, buff:range(0, 2))
+
+            return 2
+        end,
+        [1] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_handle, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_key_len, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end
+    },
+    [0x300b] = { -- CSR_VARID_GET_NEXT_BUILDDEF
+        [0] = function(buff, tree)
+            tree:add_le(bccmd_def, buff:range(0, 2))
+
+            return 2
+        end,
+        [1] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_def, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_nextdef, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end
+    },
+    [0x3012] = { -- CSR_VARID_PS_MEMORY_TYPE
+        [1] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_mem_type, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end
+    },
+    [0x301c] = { -- CSR_VARID_READ_BUILD_NAME
+        [1] = function(buff, tree)
+            local offset = 0
+            local start = buff:range(offset, 2):le_uint()
+            tree:add_le(bccmd_def, buff:range(offset, 2))
+            offset = offset + 2
+            local length = buff:range(offset, 2):le_uint()
+            tree:add_le(bccmd_nextdef, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add(bccmd_buildname, buff:range(offset + start, length))
+
+            return offset + start + length
+        end
+    },
+    [0x482e] = { -- CSR_VARID_SINGLE_CHAN
+        [0] = function(buff, tree)
+            tree:add_le(bccmd_channel, buff:range(0, 2))
+
+            return 2
+        end
+    },
+    [0x500c] = { -- CSR_VARID_PS_CLR_STORES
+        [0] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_pskey, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end
+    },
+    [0x6805] = { -- CSR_VARID_PANIC_ARG
+        [1] = function(buff, tree)
+            tree:add_le(bccmd_panic_error, buff:range(0, 2))
+
+            return 2
+        end
+    },
+    [0x6806] = { -- CSR_VARID_FAULT_ARG
+        [1] = function(buff, tree)
+            tree:add_le(bccmd_fault_error, buff:range(0, 2))
+
+            return 2
+        end
+    },
     [0x7003] = { -- CSR_VARID_PS
         [0] = function(buff, tree)
             local offset = 0
