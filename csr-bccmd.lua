@@ -876,8 +876,8 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
     local data, offset, subtree, sup, varid
 
     if cmd_opcode ~= nil and cmd_opcode.value == 0x3f then -- Vendor-Specific
-        local param_length = hci_cmd_param_length().value
-        if param_length > 10 then
+        local param_length = hci_cmd_param_length()
+        if param_length ~=nil and param_length.value > 10 then
             data = buff:range(4)
             -- refer to external/bluetooth/bluez/tools/csr_bcsp.c#do_command
             if data:range(0, 1):uint() == 0xc2 then
@@ -899,8 +899,8 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
             end
         end
     elseif event_code ~= nil and event_code.value == 0xff then -- Vendor-Specific
-        local param_length = hci_event_param_length().value
-        if param_length > 0 then
+        local param_length = hci_event_param_length()
+        if param_length ~=nil and param_length.value > 10 then
             data = buff:range(3)
             -- refer to bluez/tools/csr_bcsp.c#do_command
             if data:range(0, 1):uint() == 0xc2 then
