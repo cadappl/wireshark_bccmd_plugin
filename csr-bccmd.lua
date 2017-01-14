@@ -611,7 +611,7 @@ bccmd_pskey_value = {
 
 -- BlueCore Command Postdissector
 
-csr_bccmd_proto = Proto("csr_bccmd_proto","CSR BCCMD postdissector")
+csr_bccmd_proto = Proto("CSR-BCCMD","CSR BCCMD post dissector")
 csr_bccmd_proto.fields = {
     bccmd_opcode,
     bccmd_size,
