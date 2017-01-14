@@ -699,7 +699,7 @@ local bccmd_op_varid = {
             return 4
         end
     },
-    [0x3006] = { -- CSR_VARID_PS_NEXT
+    [0x3005] = { -- CSR_VARID_PS_NEXT
         [0] = function(buff, tree)
             local offset = 0
             tree:add_le(bccmd_pskey, buff:range(offset, 2))
