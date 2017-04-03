@@ -879,8 +879,9 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
         local param_length = hci_cmd_param_length()
         if param_length ~=nil and param_length.value > 10 then
             data = buff:range(4)
+            code = data:range(0, 1):uint()
             -- refer to external/bluetooth/bluez/tools/csr_bcsp.c#do_command
-            if data:range(0, 1):uint() == 0xc2 then
+            if code == 0xc2 or code == 0xc3 then
                 sup = 0
                 subtree = tree:add(csr_bccmd_proto, data, "CSR BlueCore Command")
 
@@ -902,8 +903,9 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
         local param_length = hci_event_param_length()
         if param_length ~=nil and param_length.value > 10 then
             data = buff:range(3)
+            code = data:range(0, 1):uint()
             -- refer to bluez/tools/csr_bcsp.c#do_command
-            if data:range(0, 1):uint() == 0xc2 then
+            if code == 0xc2 or code == 0xc3 then
                 sup = 1
                 subtree = tree:add(csr_bccmd_proto, data,"CSR BlueCore Event")
 
