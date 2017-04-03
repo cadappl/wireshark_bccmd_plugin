@@ -883,6 +883,7 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
             -- refer to external/bluetooth/bluez/tools/csr_bcsp.c#do_command
             if code == 0xc2 or code == 0xc3 then
                 sup = 0
+                pinfo.cols.protocol = 'BCCMD'
                 subtree = tree:add(csr_bccmd_proto, data, "CSR BlueCore Command")
 
                 offset = 1
@@ -907,6 +908,7 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
             -- refer to bluez/tools/csr_bcsp.c#do_command
             if code == 0xc2 or code == 0xc3 then
                 sup = 1
+                pinfo.cols.protocol = 'BCEVT'
                 subtree = tree:add(csr_bccmd_proto, data,"CSR BlueCore Event")
 
                 offset = 1
