@@ -918,12 +918,26 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
     end
 
     if varid ~= nil then
+        local func = nil
         local op = bccmd_op_varid[varid]
-        local payload = subtree:add(bccmd_payload, data:range(offset, data:len() - offset))
-        if op ~= nil and op[sup] ~= nil then
-            offset = offset + op[sup](data:range(offset), payload)
+
+        -- follow the equaling command link
+        while type(op) == "number" do
+            op = bccmd_op_varid[op]
         end
-        if data:len() ~= offset then
+
+        local payload = subtree:add(bccmd_payload, data:range(offset))
+        if op ~= nil then
+            func = op[sup]
+            -- command/event is duplicated
+            if func == nil and op[2] ~= nil then
+                func = op[2]
+            end
+            if func ~= nil then
+                offset = offset + func(data:range(offset), payload)
+            end
+        end
+        if func ~= nil and data:len() ~= offset then
             payload:add(bccmd_padding, data:range(offset))
         end
     end
