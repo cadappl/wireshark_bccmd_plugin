@@ -597,19 +597,7 @@ bccmd_pskey_store = ProtoField.uint16("bthci_vendor.csr.pskey_store", "PsKey Sto
     [0x000f] = 'psram, psi, psf then psrom'
 })
 
-bccmd_pskey_value = {
-    [0] = ProtoField.string("bthci_vendor.csr.pskey_value", "PsKey Value"),
-    [1] = ProtoField.uint16("bthci_vendor.csr.pskey_value1", "PsKey Value1", base.HEX_DEC),
-    [2] = ProtoField.uint16("bthci_vendor.csr.pskey_value2", "PsKey Value2", base.HEX_DEC),
-    [3] = ProtoField.uint16("bthci_vendor.csr.pskey_value3", "PsKey Value3", base.HEX_DEC),
-    [4] = ProtoField.uint16("bthci_vendor.csr.pskey_value4", "PsKey Value4", base.HEX_DEC),
-    [5] = ProtoField.uint16("bthci_vendor.csr.pskey_value5", "PsKey Value5", base.HEX_DEC),
-    [6] = ProtoField.uint16("bthci_vendor.csr.pskey_value6", "PsKey Value6", base.HEX_DEC),
-    [7] = ProtoField.uint16("bthci_vendor.csr.pskey_value7", "PsKey Value7", base.HEX_DEC),
-    [8] = ProtoField.uint16("bthci_vendor.csr.pskey_value8", "PsKey Value8", base.HEX_DEC),
-    [9] = ProtoField.uint16("bthci_vendor.csr.pskey_value9", "PsKey Value9", base.HEX_DEC),
-    [10] = ProtoField.uint16("bthci_vendor.csr.pskey_value10", "PsKey Value10", base.HEX_DEC)
-}
+bccmd_pskey_value = ProtoField.string("bthci_vendor.csr.pskey_value", "PsKey Value")
 
 -- BlueCore Command Postdissector
 
@@ -654,17 +642,7 @@ csr_bccmd_proto.fields = {
     bccmd_pskey,
     bccmd_pskey_size,
     bccmd_pskey_store,
-    bccmd_pskey_value[0],
-    bccmd_pskey_value[1],
-    bccmd_pskey_value[2],
-    bccmd_pskey_value[3],
-    bccmd_pskey_value[4],
-    bccmd_pskey_value[5],
-    bccmd_pskey_value[6],
-    bccmd_pskey_value[7],
-    bccmd_pskey_value[8],
-    bccmd_pskey_value[9],
-    bccmd_pskey_value[10],
+    bccmd_pskey_value,
 }
 
 -- FUNCTION
@@ -844,10 +822,8 @@ local bccmd_op_varid = {
             offset = offset + 2
             tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
             offset = offset + 2
-            for k = 1,math.min(10, size) do
-                tree:add_le(bccmd_pskey_value[k], buff:range(offset, 2))
-                offset = offset + 2
-            end
+            tree:add_le(bccmd_pskey_value, buff:range(offset, size * 2))
+            offset = offset + size * 2
 
             return offset
         end,
@@ -860,7 +836,7 @@ local bccmd_op_varid = {
             offset = offset + 2
             tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
             offset = offset + 2
-            tree:add(bccmd_pskey_value[0], buff:range(offset, size * 2))
+            tree:add(bccmd_pskey_value, buff:range(offset, size * 2))
             offset = offset + size * 2
 
             return offset
