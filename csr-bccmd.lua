@@ -1,7 +1,7 @@
 -- csr-bccmd.lua
 
 -- bluez/tools/csr.h
-local BCCMD_TYPE = {
+local bccmd_types = {
     [0x0000] = "GetReq",
     [0x0001] = "SetRep",
     [0x0002] = "SetReq"
@@ -61,7 +61,7 @@ local BCCMD_VARID = {
 }
 
 -- grep "#define CSR_PSKEY_" csr.h | awk ' { printf "    [%s] = \"%s\",\n", $3, $2;} '
-BCCMD_PSKEY = {
+bccmd_pskeys = {
     [0x0001] = "BDADDR",
     [0x0002] = "Country Code",
     [0x0003] = "Class Of Device",
@@ -71,10 +71,10 @@ BCCMD_PSKEY = {
     [0x000e] = "Max SCOs",
     [0x000f] = "Max Remote Masters",
     [0x0010] = "Enable Mastery With Slavery",
-    [0x0011] = "H_HC_FC_MAX_ACL_PKT_LEN",
-    [0x0012] = "H_HC_FC_MAX_SCO_PKT_LEN",
-    [0x0013] = "H_HC_FC_MAX_ACL_PKTS",
-    [0x0014] = "H_HC_FC_MAX_SCO_PKTS",
+    [0x0011] = "Max ACL Packet length",
+    [0x0012] = "Max SCO Packet length",
+    [0x0013] = "Max ACL Packets",
+    [0x0014] = "Max SCO Packets",
     [0x0015] = "LC FC Buffer Low Water Mark",
     [0x0017] = "LC Max Tx Power",
     [0x001d] = "Tx Gain Ramp",
@@ -494,7 +494,7 @@ BCCMD_PSKEY = {
     [0x2001] = "Extended Stub",
 }
 
-BCCMD_STATUS = {
+bccmd_status = {
     [0x0000] = "OK",
     [0x0001] = "No such varid",
     [0x0002] = "Too big",
@@ -515,11 +515,11 @@ hci_cmd_param_length = Field.new("bthci_cmd.param_length")
 hci_event_code = Field.new("bthci_evt.code")
 hci_event_param_length = Field.new("bthci_evt.param_length")
 
-bccmd_opcode = ProtoField.uint16("bthci_vendor.csr.command", "Command", base.HEX_DEC, BCCMD_TYPE)
+bccmd_opcode = ProtoField.uint16("bthci_vendor.csr.command", "Command", base.HEX_DEC, bccmd_types)
 bccmd_size = ProtoField.uint16("bthci_vendor.csr.size", "Size")
 bccmd_seqnum = ProtoField.uint16("bthci_vendor.csr.seqnum", "SeqNum", base.DEC_HEX)
-bccmd_varid = ProtoField.uint16("bthci_vendor.csr.varid", "VarId", base.HEX_DEC, BCCMD_VARID)
-bccmd_status = ProtoField.uint16("bthci_vendor.csr.status", "Status", base.HEX_DEC, BCCMD_STATUS)
+bccmd_varid = ProtoField.uint16("bthci_vendor.csr.varid", "VarId", base.HEX_DEC, bccmd_known_varids)
+bccmd_status = ProtoField.uint16("bthci_vendor.csr.status", "Status", base.HEX_DEC, bccmd_status)
 bccmd_payload = ProtoField.bytes("bthci_vendor.csr.payload", "Payload")
 bccmd_padding = ProtoField.bytes("bthci_vendor.csr.padding", "Padding")
 
@@ -582,10 +582,10 @@ bccmd_nextkey = ProtoField.uint16("bthci_vendor.csr.next_key", "Next Key", base.
 -- 0x3006 - CSR_VARID_PS_SIZE
 -- 0x500c - CSR_VARID_PS_CLR_STORES
 -- 0x7003 - CSR_VARID_PS
-bccmd_pskey = ProtoField.uint16("bthci_vendor.csr.pskey", "PS Key", base.HEX, BCCMD_PSKEY)
+bccmd_pskey = ProtoField.uint16("bthci_vendor.csr.pskey", "PS Key", base.HEX, bccmd_pskeys)
 bccmd_pskey_size = ProtoField.uint16("bthci_vendor.csr.pskey_size", "PsKey Size", base.DEC)
 bccmd_pskey_store = ProtoField.uint16("bthci_vendor.csr.pskey_store", "PsKey Store", base.HEX_DEC, {
-    [0x0000] = 'Default',
+    [0x0000] = 'default',
     [0x0001] = 'psi',
     [0x0002] = 'psf',
     [0x0003] = 'psi then psf',
@@ -630,12 +630,13 @@ csr_bccmd_proto.fields = {
     bccmd_buildname,
     -- 0x482e - CSR_VARID_SINGLE_CHAN
     bccmd_channel,
+    -- 0x3005 - CSR_VARID_PS_NEXT
+    bccmd_nextkey,
+
     -- 0x6805 -- CSR_VARID_PANIC_ARG
     bccmd_panic_error,
     -- 0x6806 - CSR_VARID_FAULT_ARG
     bccmd_fault_error,
-    -- 0x3005 - CSR_VARID_PS_NEXT
-    bccmd_nextkey,
     -- 0x3006 - CSR_VARID_PS_SIZE
     -- 0x500c - CSR_VARID_PS_CLR_STORES
     -- 0x7003 - CSR_VARID_PS
@@ -877,8 +878,8 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
                 offset = offset + 2
 
                 pinfo.cols.protocol = 'HCI_CMD_CSR'
-                if BCCMD_VARID[varid] ~= nil then
-                    pinfo.cols.info = "Send CSR " .. BCCMD_VARID[varid]
+                if bccmd_known_varids[varid] ~= nil then
+                    pinfo.cols.info = "Send CSR " .. bccmd_known_varids[varid]
                 else
                     pinfo.cols.info = "Send CSR Unknown command 0x" .. string.format("%X", varid)
                 end
@@ -908,8 +909,8 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
                 offset = offset + 2
 
                 pinfo.cols.protocol = 'HCI_EVT_CSR'
-                if BCCMD_VARID[varid] ~= nil then
-                    pinfo.cols.info = "Rcvd CSR (" .. BCCMD_VARID[varid] .. ")"
+                if bccmd_known_varids[varid] ~= nil then
+                    pinfo.cols.info = "Rcvd CSR (" .. bccmd_known_varids[varid] .. ")"
                 else
                     pinfo.cols.info = "Rcvd CSR (Unknown command 0x" .. string.format("%X", varid) .. ")"
                 end
