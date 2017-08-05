@@ -862,7 +862,13 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
             -- refer to external/bluetooth/bluez/tools/csr_bcsp.c#do_command
             if code == 0xc2 or code == 0xc3 then
                 sup = 0
-                subtree = tree:add(csr_bccmd_proto, data, "CSR BlueCore Command")
+                if code == 0xc3 then
+                    subtree = tree:add(csr_bccmd_proto, data, "CSR BlueCore HQ Command")
+                    pinfo.cols.protocol = 'HCI_HQ_CMD_CSR'
+                else
+                    subtree = tree:add(csr_bccmd_proto, data, "CSR BlueCore Command")
+                    pinfo.cols.protocol = 'HCI_CMD_CSR'
+                end
 
                 offset = 1
                 subtree:add_le(bccmd_opcode, data:range(offset, 2))
@@ -877,7 +883,6 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
                 subtree:add_le(bccmd_status, data:range(offset, 2))
                 offset = offset + 2
 
-                pinfo.cols.protocol = 'HCI_CMD_CSR'
                 if bccmd_known_varids[varid] ~= nil then
                     pinfo.cols.info = "Send CSR " .. bccmd_known_varids[varid]
                 else
@@ -893,7 +898,13 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
             -- refer to bluez/tools/csr_bcsp.c#do_command
             if code == 0xc2 or code == 0xc3 then
                 sup = 1
-                subtree = tree:add(csr_bccmd_proto, data,"CSR BlueCore Event")
+                if code == 0xc3 then
+                    subtree = tree:add(csr_bccmd_proto, data, "CSR BlueCore HQ Event")
+                    pinfo.cols.protocol = 'HCI_HQ_EVT_CSR'
+                else
+                    subtree = tree:add(csr_bccmd_proto, data, "CSR BlueCore Event")
+                    pinfo.cols.protocol = 'HCI_EVT_CSR'
+                end
 
                 offset = 1
                 subtree:add_le(bccmd_opcode, data:range(offset, 2))
@@ -908,7 +919,6 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
                 subtree:add_le(bccmd_status, data:range(offset, 2))
                 offset = offset + 2
 
-                pinfo.cols.protocol = 'HCI_EVT_CSR'
                 if bccmd_known_varids[varid] ~= nil then
                     pinfo.cols.info = "Rcvd CSR (" .. bccmd_known_varids[varid] .. ")"
                 else
