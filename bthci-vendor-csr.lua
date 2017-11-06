@@ -814,7 +814,7 @@ local bccmd_op_varid = {
         end
     },
     [0x7003] = { -- CSR_VARID_PS
-        [0] = function(buff, tree)
+        [2] = function(buff, tree)
             local offset = 0
             tree:add_le(bccmd_pskey, buff:range(offset, 2))
             offset = offset + 2
@@ -824,20 +824,6 @@ local bccmd_op_varid = {
             tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
             offset = offset + 2
             tree:add_le(bccmd_pskey_value, buff:range(offset, size * 2))
-            offset = offset + size * 2
-
-            return offset
-        end,
-        [1] = function(buff, tree)
-            local offset = 0
-            tree:add_le(bccmd_pskey, buff:range(offset, 2))
-            offset = offset + 2
-            local size = buff:range(offset, 2):le_uint()
-            tree:add_le(bccmd_pskey_size, buff:range(offset, 2))
-            offset = offset + 2
-            tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
-            offset = offset + 2
-            tree:add(bccmd_pskey_value, buff:range(offset, size * 2))
             offset = offset + size * 2
 
             return offset
