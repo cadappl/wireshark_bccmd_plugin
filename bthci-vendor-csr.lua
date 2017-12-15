@@ -1,4 +1,10 @@
--- csr-bccmd.lua
+-- bthci-vendor-csr
+local bccmd_info = {
+    version = "0.10.0",
+    author = "ccc <cadappl@gmail.com>",
+    description = "CSR BlueCore command/event dissector",
+    repository = "https://github.com/cadappl/wireshark_bccmd_plugin"
+}
 
 -- bluez/tools/csr.h
 local bccmd_types = {
@@ -940,5 +946,7 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
     end
 end
 
+set_plugin_info(bccmd_info)
 -- register csr bccmd protocol as a postdissector
 register_postdissector(csr_bccmd_proto)
+
