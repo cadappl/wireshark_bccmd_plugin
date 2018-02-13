@@ -14,7 +14,7 @@ local bccmd_types = {
 }
 
 -- grep "#define CSR_VARID_" csr.h | awk ' { printf "    [%s] = \"%s\",\n", $3, $2;} '
-local BCCMD_VARID = {
+local bccmd_known_varids = {
     [0x000b] = "PS CLR All",
     [0x000c] = "PS Factory Set",
     [0x082d] = "PS CLR All Stores",
@@ -67,7 +67,7 @@ local BCCMD_VARID = {
 }
 
 -- grep "#define CSR_PSKEY_" csr.h | awk ' { printf "    [%s] = \"%s\",\n", $3, $2;} '
-bccmd_pskeys = {
+local bccmd_pskeys = {
     [0x0001] = "BDADDR",
     [0x0002] = "Country Code",
     [0x0003] = "Class Of Device",
@@ -500,7 +500,7 @@ bccmd_pskeys = {
     [0x2001] = "Extended Stub",
 }
 
-bccmd_status = {
+local bccmd_status = {
     [0x0000] = "OK",
     [0x0001] = "No such varid",
     [0x0002] = "Too big",
