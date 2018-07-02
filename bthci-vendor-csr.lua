@@ -1,6 +1,6 @@
 -- bthci-vendor-csr
 local bccmd_info = {
-    version = "0.10.0",
+    version = "0.10.1",
     author = "ccc <cadappl@gmail.com>",
     description = "CSR BlueCore command/event dissector",
     repository = "https://github.com/cadappl/wireshark_bccmd_plugin"
