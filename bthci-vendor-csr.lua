@@ -18,24 +18,52 @@ local bccmd_known_varids = {
     [0x000b] = "PS CLR All",
     [0x000c] = "PS Factory Set",
     [0x082d] = "PS CLR All Stores",
+    [0x1000] = "HQ Fault",
+    [0x1002] = "LUT Entry",
+    [0x1003] = "Synth Settle",
+    [0x100a] = "BER Trigger",
+    [0x101c] = "Config Request",
     [0x2801] = "BC01 Status",
+    [0x2807] = "Preserve Valid",
     [0x2819] = "Build Id",
     [0x281a] = "Chip Ver",
     [0x281b] = "Chip Rev",
+    [0x2823] = "PIO Project Mask",
     [0x2825] = "Interface Version",
+    [0x2826] = "Radio Test Interface Version",
     [0x282a] = "Rand",
     [0x282c] = "Max Crypt Key Length",
+    [0x2833] = "E2 App Size",
+    [0x2834] = "Firmware Check",
+    [0x2835] = "Firmware Check Mask",
     [0x2836] = "Chip ANA Rev",
+    [0x2837] = "Ana Ftrim",
     [0x2838] = "Build Id Loader",
+    [0x2841] = "LC Frac Count",
+    [0x2843] = "Get External Clock Period",
+    [0x2865] = "Vref Constant",
+    [0x2866] = "CLK Skew Count",
+    [0x2872] = "Cached Temperature",
+    [0x2873] = "BLE Whitelist Free Space",
     [0x2c00] = "BT Clock",
+    [0x2c03] = "Deep Sleep Time",
+    [0x2c06] = "Chip Product Id",
     [0x3005] = "PS Next",
     [0x3006] = "PS Size",
     [0x3008] = "Crypt Key Length",
     [0x3009] = "Piconet Instance",
     [0x300a] = "Get CLR EVT",
     [0x300b] = "GET Next Builddef",
+    [0x300e] = "E2 Device",
+    [0x300f] = "E2 App Data",
     [0x3012] = "PS Memory Type",
+    [0x3013] = "PS Next All",
     [0x301c] = "Read Build Name",
+    [0x301d] = "RSSI ACL",
+    [0x3021] = "LC Rx Fracs",
+    [0x3034] = "Away Time",
+    [0x3038] = "HQ Scraping",
+    [0x3085] = "PIO32 Project Mask",
     [0x4001] = "Cold Reset",
     [0x4002] = "Warm Reset",
     [0x4003] = "Cold Halt",
@@ -51,19 +79,90 @@ local bccmd_known_varids = {
     [0x4010] = "Kill VM Application",
     [0x4011] = "Hopping  On",
     [0x4012] = "Cancel Page",
+    [0x4014] = "Bypass UART",
+    [0x4015] = "Sync Clock",
+    [0x4016] = "CSR Enable DUT Mode",
+    [0x401c] = "Save Connection Event Filter",
+    [0x401f] = "Enable Dev Connect",
+    [0x4024] = "E2 PS Header",
+    [0x4034] = "BLE Adv Filter Clear",
     [0x4818] = "PS CLR",
     [0x481c] = "Map SCO PCM",
+    [0x4820] = "Provke Panic",
+    [0x4821] = "Provke Delayed Panic",
+    [0x4822] = "Provke Fault",
     [0x482e] = "Single Chan",
+    [0x4845] = "HostIO Enable Debug",
+    [0x485e] = "HQ Scraping Len",
+    [0x4861] = "AUX DAC",
+    [0x4862] = "AUX DAC Enable",
+    [0x486b] = "Stream Close Source",
+    [0x486c] = "Close Sink",
+    [0x486d] = "Stream Transform Disconnect",
+    [0x486f] = "BLE T IFS",
+    [0x4875] = "BLE Scan Backoff",
+    [0x4876] = "Enable SCO Streams",
+    [0x4878] = "Coex Enable",
+    [0x487e] = "Accmd Relay Enable",
+    [0x487f] = "Stream Detach Sink",
     [0x5004] = "Radio Test",
     [0x500c] = "PS CLR Stores",
+    [0x5031] = "PCM Rate And Route",
+    [0x5041] = "Fast Pipe Enable",
+    [0x5042] = "Fast Pipe Create",
+    [0x5043] = "Fast Pipe Destroy",
+    [0x5053] = "Allocate RAM Reserve",
+    [0x5054] = "Reclaim RAM Reserve",
+    [0x5057] = "Fast Pipe Resize",
+    [0x505a] = "Stream Get Source",
+    [0x505b] = "Stream Get Sink",
+    [0x505c] = "Stream Configure",
+    [0x505e] = "Stream Connect",
+    [0x5062] = "Stream Sync SID",
+    [0x5070] = "Start Operators",
+    [0x5071] = "Stop Operators",
+    [0x5072] = "Reset Operators",
+    [0x5073] = "Destory Operators",
+    [0x5074] = "Operator Message",
+    [0x5075] = "Create Operator C",
+    [0x5076] = "Create Operator P",
+    [0x5077] = "Download Capability",
+    [0x507a] = "3D Set",
+    [0x5082] = "PIO Bit Set",
+    [0x5089] = "BLE Adv Filt Add",
+    [0x508a] = "BLE Radio Test",
     [0x6000] = "No Variable",
     [0x6802] = "Config UART",
     [0x6805] = "Panic Arg",
     [0x6806] = "Fault Arg",
+    [0x681e] = "PIO Direction Mask",
+    [0x681f] = "PIO",
     [0x6827] = "Max Tx Power",
     [0x682b] = "Default Tx Power",
-
+    [0x6832] = "PCM Attenuation",
+    [0x6839] = "PIO Strong Bias",
+    [0x683a] = "Boot Mode",
+    [0x683b] = "Scatternet Override SCO",
+    [0x683f] = "Ana Ftrim Readwrite",
+    [0x6840] = "Sniff Multislot Enable",
+    [0x6858] = "Combo Dot11 Esco Rtx Priority",
+    [0x685c] = "Inquiry Priority",
+    [0x685f] = "HQ Scraping Enable",
+    [0x6860] = "Panic On Fault",
+    [0x6861] = "Clksw Current Clocks",
+    [0x6863] = "Inquiry Tx Power",
+    [0x6869] = "Afh Channel Release Time",
+    [0x687a] = "BLE Default Tx Power",
     [0x7003] = "PS",
+    [0x7010] = "Eanble Afh",
+    [0x7011] = "BER Threshold",
+    [0x7014] = "L2CAP CRC",
+    [0x7019] = "Remote Sniff Limit",
+    [0x7020] = "Limit EDR Power",
+    [0x7083] = "PIO32 Direction Mask",
+    [0x7084] = "PIO32",
+    [0x7086] = "PIO32 Strong Bias",
+    [0x7087] = "PIO Mask Set",
 }
 
 -- grep "#define CSR_PSKEY_" csr.h | awk ' { printf "    [%s] = \"%s\",\n", $3, $2;} '
@@ -529,7 +628,10 @@ bccmd_status = ProtoField.uint16("bthci_vendor.csr.status", "Status", base.HEX_D
 bccmd_payload = ProtoField.bytes("bthci_vendor.csr.payload", "Payload")
 bccmd_padding = ProtoField.bytes("bthci_vendor.csr.padding", "Padding")
 
--- 0x281b - CSR_VARID_CHIPREV
+bccmd_unused = ProtoField.uint16("bthci_vendor.csr.unused", "Unused", base.HEX_DEC)
+bccmd_unused32 = ProtoField.uint32("bthci_vendor.csr.unused32", "Unused", base.HEX_DEC)
+
+-- 0x281b - CHIPREV
 bccmd_chiprev = ProtoField.uint16("bthci_vendor.csr.chip_rev", "Chip Rev", base.HEX_DEC, {
     [0x15] = "BC3-ROM",
     [0x26] = "BC4-External",
@@ -543,24 +645,19 @@ bccmd_chiprev = ProtoField.uint16("bthci_vendor.csr.chip_rev", "Chip Rev", base.
     [0xe2] = "BC3-Flash",
 })
 
--- 0x282a - CSR_VARID_RAND
+-- 0x282a - RAND
 bccmd_rand = ProtoField.uint16("bthci_vendor.csr.rand", "Rand", base.HEX_DEC)
-
--- 0x282a - CSR_VARID_RAND
+-- 0x282a - RAND
 bccmd_rand = ProtoField.uint32("bthci_vendor.csr.rand", "Rand", base.HEX_DEC)
-
--- 0x2c00 - CSR_VARID_BT_CLOCK
+-- 0x2c00 - BT_CLOCK
 bccmd_clock = ProtoField.uint32("bthci_vendor.csr.clock", "Clock", base.HEX_DEC)
-
--- 0x3008 - CSR_VARID_CRYPT_KEY_LENGTH
+-- 0x3008 - CRYPT_KEY_LENGTH
 bccmd_handle = ProtoField.uint16("bthci_vendor.csr.handle", "Handle", base.HEX_DEC)
 bccmd_key_len = ProtoField.uint16("bthci_vendor.csr.key_length", "Key Length", base.DEC)
-
--- 0x300b - CSR_VARID_GET_NEXT_BUILDDEF
+-- 0x300b - GET_NEXT_BUILDDEF
 bccmd_def = ProtoField.uint16("bthci_vendor.csr.def", "Def", base.HEX_DEC)
 bccmd_nextdef = ProtoField.uint16("bthci_vendor.csr.nextdef", "Nextdef", base.HEX_DEC)
-
--- 0x3012 - CSR_VARID_PS_MEMORY_TYPE
+-- 0x3012 - PS_MEMORY_TYPE
 bccmd_mem_type = ProtoField.uint16("bthci_vendor.csr.mem_type", "MemType", base.HEX_DEC, {
     [0x0000] = "Flash memory",
     [0x0001] = "EEPROM",
@@ -568,26 +665,103 @@ bccmd_mem_type = ProtoField.uint16("bthci_vendor.csr.mem_type", "MemType", base.
     [0x0003] = "ROM (or \"read-only\" flash memory)",
 })
 
--- 0x301c - CSR_VARID_READ_BUILD_NAME
+-- 0x301c - READ_BUILD_NAME
 bccmd_buildname = ProtoField.string("bthci_vendor.csr.build_name", "BuildName")
 bccmd_start = ProtoField.uint16("bthci_vendor.csr.name_start", "Start", base.HEX_DEC)
 bccmd_key_len = ProtoField.uint16("bthci_vendor.csr.name_length", "Length", base.DEC)
-
--- 0x482e - CSR_VARID_SINGLE_CHAN
+-- 0x482e - SINGLE_CHAN
 bccmd_channel = ProtoField.uint16("bthci_vendor.csr.channel", "Channel", base.HEX_DEC)
+-- 0x3005 - PS_NEXT
+bccmd_nextkey = ProtoField.uint16("bthci_vendor.csr.next_key", "Next Key", base.HEX, bccmd_pskeys)
+-- 0x5042 - FAST_PIPE_CREATE
+-- 0x5043 - FAST_PIPE_DESTROY
+bccmd_pipe_id = ProtoField.uint16("bthci_vendor.csr.pipe_id", "PipeId", base.HEX_DEC)
+bccmd_pipe_hostoverhead = ProtoField.uint16("bthci_vendor.csr.pipe_host_overhead", "HostOverHeader", base.DEC_HEX)
+bccmd_pipe_hostRxBuffer = ProtoField.uint32("bthci_vendor.csr.pipe_rx_size", "HostRxBuffer", base.DEC_HEX)
+bccmd_pipe_minTxBuffer = ProtoField.uint32("bthci_vendor.csr.pipe_tx_min", "MinTxBuffer", base.DEC_HEX)
+bccmd_pipe_desiredTxBuffer = ProtoField.uint32("bthci_vendor.csr.pipe_tx_desired", "DesiredTxBuffer", base.DEC_HEX)
+bccmd_pipe_minRxBuffer = ProtoField.uint32("bthci_vendor.csr.pipe_rx_min", "MinRxBuffer", base.DEC_HEX)
+bccmd_pipe_desiredRxBuffer = ProtoField.uint32("bthci_vendor.csr.pipe_rx_desired", "DesiredRxBuffer", base.DEC_HEX)
+-- 0x505c - STREAM_CONFIGURE
+bccmd_pipe_feature = ProtoField.uint16("bthci_vendor.csr.pipe_feature", "Feature", base.HEX_DEC, {
+    [0x0100] = "Pcm Sync Rate",
+    [0x0101] = "Pcm Master Clock Rate",
+    [0x0102] = "Pcm Master Mode",
+    [0x0114] = "Pcm Sample Format",
+    [0x0200] = "I2s Sync Rate",
+    [0x0201] = "I2s Clock Rate",
+    [0x0202] = "I2s Master Mode",
+    [0x0203] = "I2s Justify Format",
+    [0x0300] = "Cfg Input Rate",
+    [0x0301] = "Cfg Output Rate",
+    [0x0302] = "Cfg Input Gain",
+    [0x0303] = "Cfg Output Gain",
+    [0x0309] = "Codec Mic Input Gain",
+    [0x0500] = "Spdif Sample Rate",
+    [0x0501] = "Spdif Input Report Mode",
+    [0x0502] = "Spdif Output Duplicate Enable",
+    [0x0503] = "Spdif Output Status",
+    [0x0504] = "Spdif Input Rate Detect",
+    [0x0701] = "Spdif Bitmode",
+    [0x0800] = "Atu Size",
+    [0x0801] = "Auto Flush",
+    [0x0802] = "Num Tokens",
+})
+bccmd_pipe_config_value = ProtoField.uint32("bthci_vendor.csr.pipe_config_value", "Configure", base.HEX_DEC)
 
--- 0x6805 - CSR_VARID_PANIC_ARG
+
+-- 0x505a - STREAM_GET_SOURCE
+-- 0x505b - STREAM_GET_SINK
+bccmd_stream_type = ProtoField.uint16("bthci_vendor.csr.stream_type", "Type", base.DEC_HEX, {
+    -- FIXME: Sink has a conflict value for (3)
+    [1] = "PCM", [2] = "I2S", [3] = "CODEC", [4] = "FM", [5] = "SPDIF", [6] = "DM", [7] = "A2DP", [10] = "I2S_2"
+})
+bccmd_stream_aclHandle = ProtoField.uint16("bthci_vendor.csr.stream.acl.handle", "Acl Handle", base.HEX_DEC)
+bccmd_stream_ChannelId = ProtoField.uint16("bthci_vendor.csr.stream.channelid", "Channel Id", base.HEX_DEC)
+-- 0x505e - STREAM_CONNECT
+bccmd_stream_sourceId = ProtoField.uint16("bthci_vendor.csr.stream.source_id", "Source Id", base.HEX_DEC)
+bccmd_stream_sinkId = ProtoField.uint16("bthci_vendor.csr.stream.sink_id", "Sink Id", base.HEX_DEC)
+-- 0x5062 - STREAM_SYNC_SID
+bccmd_stream_id1 = ProtoField.uint16("bthci_vendor.csr.stream_id1", "ID1", base.HEX_DEC)
+bccmd_stream_id2 = ProtoField.uint16("bthci_vendor.csr.stream_id2", "ID2", base.HEX_DEC)
+
+-- 0x5075 - CREATE_OPERATOR_C
+-- 0x5077 - DOWNLOAD_CAPABILITY
+bccmd_capacity = ProtoField.uint16("bthci_vendor.csr.capacity", "Capacity", base.HEX, {[0x9d] = 'Download'})
+-- 0x507a -- 3D_SET
+bccmd_3ds_enable = ProtoField.uint16("bthci_vendor.csr.3ds.enable", "Enable", base.HEX_DEC)
+bccmd_ontime = ProtoField.uint16("bthci_vendor.csr.ontime", "Ontime", base.HEX_DEC)
+bccmd_pio = ProtoField.uint16("bthci_vendor.csr.pio", "PIO", base.HEX_DEC)
+bccmd_sync_edge = ProtoField.uint16("bthci_vendor.csr.sync_edge", "Sync Edge", base.HEX_DEC)
+bccmd_advertise_interval = ProtoField.uint16("bthci_vendor.csr.3ds.advertise.internal", "Advertise Internal", base.HEX_DEC)
+bccmd_advertise_channels = ProtoField.uint16("bthci_vendor.csr.3ds.advertise.channels", "Advertise Channels", base.HEX_DEC)
+bccmd_jitter = ProtoField.uint16("bthci_vendor.csr.3ds.jitter", "Jitter", base.HEX_DEC)
+bccmd_sync_adjustment = ProtoField.uint16("bthci_vendor.csr.sync_adjust", "Sync Adjustment", base.HEX_DEC)
+-- 0x5082 - PIO_BIT_SET
+bccmd_pio_bit_set_pin = ProtoField.uint16("bthci_vendor.csr.pio_set_pin", "Pin", base.HEX, {
+    [0] = "Uart RX",
+    [1] = "Uart TX",
+    [2] = "Uart RTS",
+    [3] = "Uart CTS",
+    [4] = "PCM In",
+    [5] = "PCM Out",
+    [6] = "PCM SYNC",
+    [7] = "PCM CLK",
+    [8] = "SQIF",
+    [9] = "LED",
+    [10] = "LCD Segment",
+    [11] = "LCD Common"
+})
+
+bccmd_pio_bit_set_fun = ProtoField.uint16("bthci_vendor.csr.pio_set_fun", "Function", base.HEX_DEC)
+
+-- 0x6805 - PANIC_ARG
 bccmd_panic_error = ProtoField.uint16("bthci_vendor.csr.panic_error", "Error", base.HEX_DEC)
-
--- 0x6806 - CSR_VARID_FAULT_ARG
+-- 0x6806 - FAULT_ARG
 bccmd_fault_error = ProtoField.uint16("bthci_vendor.csr.fault_error", "Error", base.HEX_DEC)
-
--- 0x3005 - CSR_VARID_PS_NEXT
-bccmd_nextkey = ProtoField.uint16("bthci_vendor.csr.next_key", "Next Key", base.HEX, BCCMD_PSKEY)
-
--- 0x3006 - CSR_VARID_PS_SIZE
--- 0x500c - CSR_VARID_PS_CLR_STORES
--- 0x7003 - CSR_VARID_PS
+-- 0x3006 - PS_SIZE
+-- 0x500c - PS_CLR_STORES
+-- 0x7003 - PS
 bccmd_pskey = ProtoField.uint16("bthci_vendor.csr.pskey", "PS Key", base.HEX, bccmd_pskeys)
 bccmd_pskey_size = ProtoField.uint16("bthci_vendor.csr.pskey_size", "PsKey Size", base.DEC)
 bccmd_pskey_store = ProtoField.uint16("bthci_vendor.csr.pskey_store", "PsKey Store", base.HEX_DEC, {
@@ -616,36 +790,76 @@ csr_bccmd_proto.fields = {
     bccmd_status,
     bccmd_payload,
     bccmd_padding,
-    -- 0x281b - CSR_VARID_CHIPREV
+    bccmd_unused,
+    bccmd_unused32,
+    -- 0x281b - CHIPREV
     bccmd_chiprev,
-    -- 0x282a - CSR_VARID_RAND
+    -- 0x282a - RAND
     bccmd_rand,
-    -- 0x2c00 - CSR_VARID_BT_CLOCK
+    -- 0x2c00 - BT_CLOCK
     bccmd_clock,
-    -- 0x3008 - CSR_VARID_CRYPT_KEY_LENGTH
+    -- 0x3008 - CRYPT_KEY_LENGTH
     bccmd_handle,
     bccmd_key_len,
-    -- 0x300b - CSR_VARID_GET_NEXT_BUILDDEF
+    -- 0x300b - GET_NEXT_BUILDDEF
     bccmd_def,
     bccmd_nextdef,
-    -- 0x3012 - CSR_VARID_PS_MEMORY_TYPE
+    -- 0x3012 - PS_MEMORY_TYPE
     bccmd_mem_type,
-    -- 0x301c - CSR_VARID_READ_BUILD_NAME
+    -- 0x301c - READ_BUILD_NAME
     bccmd_start,
     bccmd_length,
     bccmd_buildname,
-    -- 0x482e - CSR_VARID_SINGLE_CHAN
+    -- 0x482e - SINGLE_CHAN
     bccmd_channel,
-    -- 0x3005 - CSR_VARID_PS_NEXT
+    -- 0x3005 - PS_NEXT
     bccmd_nextkey,
-
-    -- 0x6805 -- CSR_VARID_PANIC_ARG
+    -- 0x5042 - FAST_PIPE_CREATE
+    -- 0x5043 - FAST_PIPE_DESTROY
+    -- 0x5057 - FAST_PIPE_RESIZE
+    bccmd_pipe_id,
+    bccmd_pipe_hostoverhead,
+    bccmd_pipe_hostRxBuffer,
+    bccmd_pipe_minTxBuffer,
+    bccmd_pipe_desiredTxBuffer,
+    bccmd_pipe_minRxBuffer,
+    bccmd_pipe_desiredRxBuffer,
+    -- 0x505a - STREAM_GET_SOURCE
+    -- 0x505b - STREAM_GET_SINK
+    bccmd_stream_type,
+    bccmd_stream_aclHandle,
+    bccmd_stream_ChannelId,
+    -- 0x505c - STREAM_CONFIGURE
+    bccmd_pipe_feature,
+    bccmd_pipe_config_value,
+    -- 0x505e - STREAM_CONNECT
+    bccmd_stream_sourceId,
+    bccmd_stream_sinkId,
+    -- 0x5062 - STREAM_SYNC_SID
+    bccmd_stream_id1,
+    bccmd_stream_id2,
+    -- 0x5075 - CREATE_OPERATOR_C
+    -- 0x5077 - DOWNLOAD_CAPABILITY
+    bccmd_capacity,
+    -- 0x507a -- 3D_SET
+    bccmd_3ds_enable,
+    bccmd_ontime,
+    bccmd_pio,
+    bccmd_sync_edge,
+    bccmd_advertise_interval,
+    bccmd_advertise_channels,
+    bccmd_jitter,
+    bccmd_sync_adjustment,
+    -- 0x5082 - PIO_BIT_SET
+    bccmd_pio_bit_set_pin,
+    bccmd_pio_bit_set_fun,
+    -- 0x6805 -- PANIC_ARG
     bccmd_panic_error,
-    -- 0x6806 - CSR_VARID_FAULT_ARG
+    -- 0x6806 - FAULT_ARG
     bccmd_fault_error,
-    -- 0x3006 - CSR_VARID_PS_SIZE
-    -- 0x500c - CSR_VARID_PS_CLR_STORES
-    -- 0x7003 - CSR_VARID_PS
+    -- 0x3006 - PS_SIZE
+    -- 0x500c - PS_CLR_STORES
+    -- 0x7003 - PS
     bccmd_pskey,
     bccmd_pskey_size,
     bccmd_pskey_store,
@@ -665,28 +879,28 @@ function tree_add_u32(tree, protofield, buff)
 end
 
 local bccmd_op_varid = {
-    [0x281b] = { -- CSR_VARID_CHIPREV
+    [0x281b] = { -- CHIPREV
         [1] = function(buff, tree)
             tree:add_le(bccmd_chiprev, buff:range(0, 2))
 
             return 2
         end
     },
-    [0x282a] = { -- CSR_VARID_RAND
+    [0x282a] = { -- RAND
         [1] = function(buff, tree)
             tree:add_le(bccmd_rand, buff:range(0, 2))
 
             return 2
         end
     },
-    [0x2c00] = { -- CSR_VARID_BT_CLOCK
+    [0x2c00] = { -- BT_CLOCK
         [1] = function(buff, tree)
             tree_add_u32(tree, bccmd_clock, buff:range(0, 4))
 
             return 4
         end
     },
-    [0x3005] = { -- CSR_VARID_PS_NEXT
+    [0x3005] = { -- PS_NEXT
         [0] = function(buff, tree)
             local offset = 0
             tree:add_le(bccmd_pskey, buff:range(offset, 2))
@@ -707,7 +921,7 @@ local bccmd_op_varid = {
             return offset
         end
     },
-    [0x3006] = { -- CSR_VARID_PS_SIZE
+    [0x3006] = { -- PS_SIZE
         [0] = function(buff, tree)
             local offset = 0
             tree:add_le(bccmd_pskey, buff:range(offset, 2))
@@ -730,7 +944,7 @@ local bccmd_op_varid = {
             return offset
         end
     },
-    [0x3008] = { -- CSR_VARID_CRYPT_KEY_LENGTH
+    [0x3008] = { -- CRYPT_KEY_LENGTH
         [0] = function(buff, tree)
             tree:add_le(bccmd_handle, buff:range(0, 2))
 
@@ -746,7 +960,7 @@ local bccmd_op_varid = {
             return offset
         end
     },
-    [0x300b] = { -- CSR_VARID_GET_NEXT_BUILDDEF
+    [0x300b] = { -- GET_NEXT_BUILDDEF
         [0] = function(buff, tree)
             tree:add_le(bccmd_def, buff:range(0, 2))
 
@@ -762,7 +976,7 @@ local bccmd_op_varid = {
             return offset
         end
     },
-    [0x3012] = { -- CSR_VARID_PS_MEMORY_TYPE
+    [0x3012] = { -- PS_MEMORY_TYPE
         [1] = function(buff, tree)
             local offset = 0
             tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
@@ -773,7 +987,7 @@ local bccmd_op_varid = {
             return offset
         end
     },
-    [0x301c] = { -- CSR_VARID_READ_BUILD_NAME
+    [0x301c] = { -- READ_BUILD_NAME
         [1] = function(buff, tree)
             local offset = 0
             local start = buff:range(offset, 2):le_uint()
@@ -787,14 +1001,14 @@ local bccmd_op_varid = {
             return offset + start + length
         end
     },
-    [0x482e] = { -- CSR_VARID_SINGLE_CHAN
+    [0x482e] = { -- SINGLE_CHAN
         [0] = function(buff, tree)
             tree:add_le(bccmd_channel, buff:range(0, 2))
 
             return 2
         end
     },
-    [0x500c] = { -- CSR_VARID_PS_CLR_STORES
+    [0x500c] = { -- PS_CLR_STORES
         [0] = function(buff, tree)
             local offset = 0
             tree:add_le(bccmd_pskey, buff:range(offset, 2))
@@ -805,22 +1019,181 @@ local bccmd_op_varid = {
             return offset
         end
     },
-    [0x6805] = { -- CSR_VARID_PANIC_ARG
+    [0x5042] = { -- FAST_PIPE_CREATE
+        [2] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_pipe_id, buff:range(offset, 2))
+            offset = offset + 2
+            tree_add_u32(tree, bccmd_pipe_hostoverhead, buff:range(offset, 4))
+            offset = offset + 4
+            tree_add_u32(tree, bccmd_pipe_hostRxBuffer, buff:range(offset, 4))
+            offset = offset + 4
+            tree_add_u32(tree, bccmd_pipe_minTxBuffer, buff:range(offset, 4))
+            offset = offset + 4
+            tree_add_u32(tree, bccmd_pipe_desiredTxBuffer, buff:range(offset, 4))
+            offset = offset + 4
+            tree_add_u32(tree, bccmd_pipe_minRxBuffer, buff:range(offset, 4))
+            offset = offset + 4
+            tree_add_u32(tree, bccmd_pipe_desiredRxBuffer, buff:range(offset, 4))
+            offset = offset + 4
+            tree_add_u32(tree, bccmd_unused32, buff:range(offset, 4))
+            offset = offset + 4
+            tree_add_u32(tree, bccmd_unused32, buff:range(offset, 4))
+            offset = offset + 4
+            tree_add_u32(tree, bccmd_unused32, buff:range(offset, 4))
+            offset = offset + 4
+            tree:add_le(bccmd_unused, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_unused, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_unused, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end
+    },
+    [0x5043] = { -- FAST_PIPE_DESTROY
+        [0] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_pipe_id, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_unused, buff:range(offset, 2))
+            offset = offset + 2
+            return offset
+        end
+    },
+    [0x5057] = { -- FAST_PIPE_RESIZE
+        [0] = function(buff, tree)
+            local offset = 0
+            tree_add_u32(tree, bccmd_pipe_hostRxBuffer, buff:range(offset, 4))
+            offset = offset + 4
+            tree_add_u32(tree, bccmd_unused32, buff:range(offset, 4))
+            offset = offset + 4
+            tree:add_le(bccmd_unused, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end
+    },
+    [0x505a] = { -- STREAM_GET_SOURCE
+        [0] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_stream_type, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_stream_aclHandle, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_stream_ChannelId, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end
+    },
+    [0x505b] = 0x505a, -- STREAM_GET_SINK = STREAM_GET_SOURCE
+    [0x505c] = { -- STREAM_CONFIGURE
+        [0] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_pipe_id, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_pipe_feature, buff:range(offset, 2))
+            offset = offset + 2
+            tree_add_u32(tree, bccmd_pipe_config_value, buff:range(offset, 4))
+            offset = offset + 4
+
+            return offset
+        end
+    },
+    [0x505e] = { -- STREAM_CONNECT
+        [0] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_stream_sourceId, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_stream_sinkId, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end
+    },
+    [0x5062] = { -- STREAM_SYNC_SID
+        [0] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_stream_id1, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_stream_id2, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end
+    },
+    [0x5075] = { -- CREATE_OPERATOR_C
+        [2] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_capacity, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_pipe_id, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_unused, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_unused, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end
+    },
+    [0x5077] = 0x5075, -- DOWNLOAD_CAPABILITY
+    [0x507a] = { -- 3D_SET
+        [2] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_3ds_enable, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_ontime, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_pio, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_sync_edge, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_advertise_interval, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_advertise_channels, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_jitter, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_sync_adjustment, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end
+    },
+    [0x5082] = { -- PIO_BIT_SET
+        [2] = function(buff, tree)
+            local offset = 0
+            tree:add_le(bccmd_pio_bit_set_pin, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_pio_bit_set_fun, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_unused, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_unused, buff:range(offset, 2))
+            offset = offset + 2
+
+            return offset
+        end
+    },
+    [0x6805] = { -- PANIC_ARG
         [1] = function(buff, tree)
             tree:add_le(bccmd_panic_error, buff:range(0, 2))
 
             return 2
         end
     },
-    [0x6806] = { -- CSR_VARID_FAULT_ARG
+    [0x6806] = { -- FAULT_ARG
         [1] = function(buff, tree)
             tree:add_le(bccmd_fault_error, buff:range(0, 2))
 
             return 2
         end
     },
-    [0x7003] = { -- CSR_VARID_PS
-        [2] = function(buff, tree)
+    [0x7003] = { -- PS
+        [0] = function(buff, tree)
             local offset = 0
             tree:add_le(bccmd_pskey, buff:range(offset, 2))
             offset = offset + 2
@@ -830,6 +1203,22 @@ local bccmd_op_varid = {
             tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
             offset = offset + 2
             tree:add_le(bccmd_pskey_value, buff:range(offset, size * 2))
+            offset = offset + size * 2
+
+            return offset
+        end,
+        [1] = function(buff, tree)
+            local offset = 0
+            local pskey = buff:range(offset, 2):le_uint()
+            tree:add_le(bccmd_pskey, buff:range(offset, 2))
+            offset = offset + 2
+            local size = buff:range(offset, 2):le_uint()
+            tree:add_le(bccmd_pskey_size, buff:range(offset, 2))
+            offset = offset + 2
+            tree:add_le(bccmd_pskey_store, buff:range(offset, 2))
+            offset = offset + 2
+            local psvalue = buff:range(offset, size * 2)
+            tree:add(bccmd_pskey_value, buff:range(offset, size * 2))
             offset = offset + size * 2
 
             return offset
