@@ -1244,10 +1244,10 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
             if code == 0xc2 or code == 0xc3 then
                 sup = 0
                 if code == 0xc3 then
-                    subtree = tree:add(csr_bccmd_proto, data, "CSR BlueCore HQ Command")
+                    subtree = tree:add(csr_bccmd_proto, data, "Bluetooth CSR BlueCore HQ Command")
                     pinfo.cols.protocol = 'HCI_HQ_CMD_CSR'
                 else
-                    subtree = tree:add(csr_bccmd_proto, data, "CSR BlueCore Command")
+                    subtree = tree:add(csr_bccmd_proto, data, "Bluetooth CSR BlueCore Command")
                     pinfo.cols.protocol = 'HCI_CMD_CSR'
                 end
 
@@ -1280,10 +1280,10 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
             if code == 0xc2 or code == 0xc3 then
                 sup = 1
                 if code == 0xc3 then
-                    subtree = tree:add(csr_bccmd_proto, data, "CSR BlueCore HQ Event")
+                    subtree = tree:add(csr_bccmd_proto, data, "Bluetooth CSR BlueCore HQ Event")
                     pinfo.cols.protocol = 'HCI_HQ_EVT_CSR'
                 else
-                    subtree = tree:add(csr_bccmd_proto, data, "CSR BlueCore Event")
+                    subtree = tree:add(csr_bccmd_proto, data, "Bluetooth CSR BlueCore Event")
                     pinfo.cols.protocol = 'HCI_EVT_CSR'
                 end
 
