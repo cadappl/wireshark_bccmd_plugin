@@ -1264,10 +1264,10 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
                 subtree:add_le(bccmd_status, data:range(offset, 2))
                 offset = offset + 2
 
-                if bccmd_known_varids[varid] ~= nil then
-                    pinfo.cols.info = "Send CSR " .. bccmd_known_varids[varid]
+                if code == 0xc3 then
+                    pinfo.cols.info = "Sent CSR " .. (bccmd_known_varids[varid] or "Unknown command 0x" .. string.format("%X", varid)) .. " Reply"
                 else
-                    pinfo.cols.info = "Send CSR Unknown command 0x" .. string.format("%X", varid)
+                    pinfo.cols.info = "Sent CSR " .. (bccmd_known_varids[varid] or "Unknown command 0x" .. string.format("%X", varid))
                 end
             end
         end
@@ -1300,10 +1300,10 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
                 subtree:add_le(bccmd_status, data:range(offset, 2))
                 offset = offset + 2
 
-                if bccmd_known_varids[varid] ~= nil then
-                    pinfo.cols.info = "Rcvd CSR (" .. bccmd_known_varids[varid] .. ")"
+                if code == 0xc3 then
+                    pinfo.cols.info = "Rcvd CSR " .. (bccmd_known_varids[varid] or ("Unknown command 0x" .. string.format("%X", varid)))
                 else
-                    pinfo.cols.info = "Rcvd CSR (Unknown command 0x" .. string.format("%X", varid) .. ")"
+                    pinfo.cols.info = "Rcvd CSR complete (" .. (bccmd_known_varids[varid] or ("Unknown command 0x" .. string.format("%X", varid))) .. ")"
                 end
             end
         end
