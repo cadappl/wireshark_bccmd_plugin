@@ -613,6 +613,11 @@ local bccmd_status = {
     [0x000a] = "Timeout"
 }
 
+-- Bluetooth ACL Fields
+bthci_acl_isvalid_session = Field.new("bthci_acl.invalid_session")
+bthci_acl_length = Field.new("bthci_acl.length")
+bthci_acl_data = Field.new("bthci_acl.data")
+
 -- BlueCore Command Field and ProtoField
 hci_cmd_opcode = Field.new("bthci_cmd.opcode.ogf")
 hci_cmd_param_length = Field.new("bthci_cmd.param_length")
@@ -1226,6 +1231,7 @@ local bccmd_op_varid = {
     },
 }
 
+
 -- Dissector
 function csr_bccmd_proto.dissector(buff, pinfo, tree)
     -- Bluetooth HCI Command
@@ -1335,7 +1341,33 @@ function csr_bccmd_proto.dissector(buff, pinfo, tree)
     end
 end
 
+-- Listener
+function bccmd_dkap_menu()
+    local tap = Listener.new("bluetooth")
+    local output = assert(io.open("subwoofer.dkap", "wb"))
+
+    function tap.packet(pinfo, tvb, tapinfo)
+        local isvalid = bthci_acl_isvalid_session()
+        if isvalid ~= nil then
+            local length = bthci_acl_length().value
+            if length > 8 then
+                data = bthci_acl_data()
+                output:write(data.range:raw(5)) -- 5 is the ACL head offset
+            end
+        end
+    end
+
+    -- retap all the packets, then all the listeners begin to work.
+    retap_packets()
+
+    if output ~= nil then
+        output:close()
+        output = nil
+    end
+end
+
 set_plugin_info(bccmd_info)
 -- register csr bccmd protocol as a postdissector
 register_postdissector(csr_bccmd_proto)
-
+-- register dkap dumper as a menu
+register_menu('CSR dkap dumper', bccmd_dkap_menu, MENU_TOOLS_UNSORTED)
